@@ -1,0 +1,31 @@
+Spring Integration :
+
+    -介绍 : 一种便捷的事件驱动消息框架，用来在系统之间做消息传递
+
+    -使用场景 : 解耦。 例如你的系统处在各个系统的中间，需要JMS交互，又需要Database/Redis/MongoDB，还需要监听Tcp/UDP等，
+                    还有固定的文件转移，分析。还面对着时不时的更改需求的风险。那么，它再适合不过了。可以使用它当一个中间件，
+                    来集成各个模块。
+
+    -组成部分
+       1.Message : 消息体。用来承载传输的消息。由 Header 和 Payload 两部分组成。Header 用来存储一些特殊属性，而具体的
+                   传输内容是封装在 Payload 内的。Payload 可以携带的任何Object对象。
+
+       2.MessageChannel : 消息通道。用于连接 Spring Integration 集成的各个模块，是消息在各个模块间进行流通的“公路”，消息
+                           通道有如下类型 :
+                              2.1 : PublishSubscribeChannel。 广播模式，所有连接此通道的消费者都能接收到此通道内的消息。
+                              2.2 : QueueChannel。队列模式，消息采取先进先出的规则。此通道实现点对点式的传输方式。如果内部
+                                                 的消息已经达到了最大容量，则会阻塞住，直到队列有时间，或者发送的消息被超时处理
+                              2.3 : PriorityChannel。 基于消息体的 priority头消息 设置的规则来消费消息。规则由开发者自定义
+                              2.4 : RendezvousChannel。 当通道内有消息时，禁止其它信息进来
+                              2.5 : DirectChannel。 最简单的点对点通道方式，一个简单的单线程通道。是spring-integration的默认通道类型
+                              2.6 : ExecutorChannel。多线程通道
+                              2.7 : FluxMessageChannel。反映式消息通道
+       3.Filter : 过滤器。 放置于消息通道的中间，它能够根据断言允许或拒绝消息进入流程的下一步
+       4.Transformer : 消息转换器。作用是可以将消息转为你想要的类型。入可以将xml形式转换成string类型。
+       5.Router : 路由器。基于路由的断言，将信息分配到不同的通道上
+       6.splitter : 分割器。用于将一个消息分割成多个消息。如将一个辅助了用户列表的消息分割成一个消息内只有一个用户的多个消息
+       7.ServiceActivator : 服务器激活器。在消息进入通道后，用于激活一个或多个服务对消息进行处理
+       8.MessageGateway : 网关。通过网关，应用可以提交数据到集成流中，或者从集成流中接收消息。
+       9.inbound channel adapter : 通道适配器。数据通过一个入站通道适配器进入集成流，通过出站通道适配器离开集成流
+       10.端点模块。Spring Integration提供了 二十多个端点模块给我们，让我们不需要直接去写适配器，直接将依赖导入就可以
+                  集成这些模块。

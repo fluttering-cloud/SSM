@@ -1,0 +1,4 @@
+spring:
+  jms:
+    template:
+      default-destination: spring-jmstemplate.User.queue

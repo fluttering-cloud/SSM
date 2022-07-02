@@ -1,0 +1,11 @@
+thymeleaf 笔记
+
+    1.什么是 thymeleaf ？
+      Thymeleaf是用来开发Web和独立环境项目的服务器端的Java模版引擎，和 jsp 的功能相似，用于将后端的数据渲染到前端页面，
+      因为 springboot 不支持 jsp ,所以我们需要选择其他的模板引擎。 类似的模板引擎还有 Freemarker 等等。
+
+    2.thymeleaf 的使用
+       1.导入依赖 spring-boot-starter-thymeleaf
+       2.在 HTML 页面内声明命名空间 :xmlns="http://www.w3.org/1999/xhtml"
+                                 xmlns:th="http://www.thymeleaf.org"
+       3.使用 thymeleaf方言 进行后台数据的渲染，方言可以参考相关文档

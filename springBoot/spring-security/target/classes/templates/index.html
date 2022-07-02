@@ -1,0 +1,24 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+</head>
+<body>
+
+       <h1>欢迎来到首页</h1>
+
+       <form method="get" th:action="@{/vip1}">
+           <button type="submit">vip1</button>
+       </form>
+
+       <form method="get" th:action="@{/vip2}">
+           <button type="submit">vip2</button>
+       </form>
+
+       <form method="get" th:action="@{/vip3}">
+           <button type="submit">vip3</button>
+       </form>
+
+</body>
+</html>

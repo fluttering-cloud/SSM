@@ -1,0 +1,9 @@
+1.两个简单的名词
+    TaskScheduler:任务调度者
+    TaskExecutor:任务执行者
+
+2.两个注解：
+     @EnableScheduling //用在程序启动的类上，表示开启注解功能
+     @Scheduled //定时任务什么时候执行
+
+3.Cron表达式

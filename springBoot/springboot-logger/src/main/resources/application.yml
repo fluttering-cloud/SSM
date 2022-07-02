@@ -1,0 +1,6 @@
+logging:
+  level:
+    root: debug
+    springbootlogger.controller: warn
+  file:
+    path: log/blog.log

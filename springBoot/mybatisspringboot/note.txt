@@ -1,0 +1,15 @@
+springboot与mybatis整合
+      在spring内，mybatis的整合是放在spring-dao.xml(我相关于将spring的配置文件根据MVC分为三个子文件)
+      那么在springboot中怎么整合呢？
+      步骤如下：
+        1.导入依赖 spring-boot-starter-jdbc、mybatis-spring-boot-starter、mysql-connector-java
+        2.编写配置文件
+          2.1 初始化数据库连接池，若是要使用Druid还需要完成Druid的配置
+          2.2 编写mapper接口，接口要使用两个标签，分别为  @Mapper : 告诉mybatis这是一个mapper接口
+                                                   @Repository : dao层标签，将其注入容器
+              在 resource 目录下建立一个 mybatis 文件夹， 编写接口的mapper文件
+              和 mybatis-config(mybatis配置文件)
+
+          2.3 引入mybatis的配置文件
+               mapper-locations: classpath:路径名  用于引入 mapper 的配置文件
+               config-location: classpath:路径名  用于引入mybatis的配置文件

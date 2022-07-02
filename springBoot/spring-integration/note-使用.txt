@@ -1,0 +1,19 @@
+使用 spring integration
+
+  注意 : 以下的讲解都是以集成 文件模块为例的，但是其它模块的集成的流程与此大同小异
+
+  spring integration 的简单使用
+     1.导入 spring integration 的依赖
+     2.导入集成端点的模块
+     3.创建网关接口
+     4.在网关接口内声明写入/写出集成流的方法
+     5.配置集成流，配置方法有三种，我们可以选用其中一种
+        5.1使用 xml 文件配置
+            5.1.1 配置输入通道
+            5.1.2 配置转换器
+            5.1.3 配置输出通道
+            5.1.4 配置出站适配器
+            5.1.5 使用@ImportResource将配置文件与配置类绑定，例如 FileWriterIntegrationConfigXml 所示
+
+        5.2使用JavaConfig配置，此配置的优点是不需要写 xml 文件，也是比较推荐的一种方式，如 FileWriterIntegrationConfig 所示
+

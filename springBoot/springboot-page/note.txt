@@ -1,0 +1,30 @@
+关于使用 jpa 进行分页查询
+
+  - springboot 为 jpa 进行分页查询操作提供了很好的支持，我们只需要将 Pageable 对象作为参数传递给
+    相关的方法，当相关方法进行操作后就会将数据封装成页表的形式并返回 Json 格式的对象，我们只需要将此对象
+    传递给前端页面渲染即可
+
+  - 关于 Pageable 的认识，Pageable 是一个规定页表格式的对象，在Pageable 对象内，我们可以设置每一页
+    显示数据的条数，数据的排序规则等。默认条件下，每一页都是显示 10 条数据的
+
+  - 如何设置 Pageable 的属性，我们可以在 Pageable 对象前用 @PageableDefault() 标签设置每一页显示
+    数据的条数、数据排序的规则、数据排序的关键字等
+
+  - 例：现在有一个需求，需要获取所有的 User 对象，并将其在前端显示，那么我们如何来获取这个对象呢？
+         代码 ：
+              Page<User> listUser(@PageableDefault Pageable pageable){
+                 return userRepository.findAll(pageable);
+               }
+
+         解释： -Page<User> 表示返回的 Page 对象内封装的对象为User
+               -Pageable pageable,这是一个 Pageable 对象，用于设置每一页中显示数据的多少、排序规则等
+               默认情况下是一页显示 10 条数据。将吃对象传递给 jpa 的方法后，会将方法获得的数据封装成相应
+               的页表。
+               -@PageableDefault ：用于设置每一页页表显示数据的大小、显示规则等,内有4个参数：
+                 sort = {}  //用于设置数据排序规则
+                 direction = //用于设置排序的关键字，如利用 id 排序，则 direction = id
+                 size =  //用于设置每一页显示的数据的条数
+                 page =  //用于设置总页数
+
+
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wang.dao.BooksMapper">
+
+    <select id="selectBooksById" parameterType="int" resultType="com.wang.pojo.Books">
+        select * from books where bookID = #{bookID}
+    </select>
+
+    <insert id="addBooks" parameterType="com.wang.pojo.Books">
+        insert into books(bookName,bookCounts,detail) values (#{bookName},#{bookCounts},#{detail})
+    </insert>
+
+    <update id="updataBookById" parameterType="com.wang.pojo.Books">
+        update book set bookName = #{bookName},bookCounts=#{bookCounts},bookCounts={bookCounts} where bookID=#{bookId}
+    </update>
+</mapper>

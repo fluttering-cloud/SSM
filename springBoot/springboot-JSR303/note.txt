@@ -1,0 +1,23 @@
+JSR303的使用
+
+    1.JSR303的功能 : 用于进行字段格式、长度、空值等的控制
+
+    2.JSR303的使用
+       2.1 ：导入依赖 spring-boot-starter-validation
+       2.2 ：在需要验证的实体类的属性上加如下标签
+             2.2.1 ：@NotNull 表示属性不能为空
+             2.2.2 ：@Email(message=" ") 表示属性的格式为邮箱
+             2.2.3 ：@Size(min/max = ,message="") 用于规定属性的长度
+       2.3 ：在需要校验的 Controller 中设置校验的对象，并用 @valid 标记
+
+    3.关于 thymeleaf 方言的使用注意
+         使用场景 ：在我们进行信息校验时，当用户输入的信息不符合规范时，我们需要将提示信息回显，告诉用户，
+       这时候就需要使用如下 thymeleaf 方言了
+         1.th:object="${"XXX"}" ：用于获取后台传递过来的对象，XXX是存入 Model 的参数名
+         2.*{YYY},YYY 为object 对象的属性名，用于获取 object的属性值，若是没有 object 对象，使用*{}会报错
+         3.th:field="*{userName}" 表示 id="userName",name="userName"
+         4.#fields.hasErrors('userName') : 获取 JSR303 关于 userName 的校验结果
+         5.th:errors="*{userName} 用于获取 message, 通常用于校验失败后回显提示用户信息
+
+
+

@@ -1,0 +1,15 @@
+springboot拦截器 : interceptor
+  -在程序中，当我们需要对某些请求进行控制时，就需要用拦截器
+
+  -使用
+   1.自定义一个拦截器类，并且实现 HandlerInterceptor
+   2.根据需求复写 HandlerInterceptor 的三个方法
+        2.1 : preHandle,表示在请求处理之前进行拦截，当一个请求不符合拦截器设置的规则，则不会执行原来的请求了
+              使用场景 : 如身份认证，身份授权。
+        2.2 : postHandle 该方法在进入Handler方法之后，返回ModelAndView之前执行
+              使用场景 : 从modelAndView出发，将公用模型数据（如菜单导航）在这里传到视图，也可以在这里统一制定视图
+        2.3 : afterCompletion,该方法在handler方法执行完之后执行。
+              使用场景 : 统一日志处理，统一异常处理
+
+   3.将拦截器在 WebMvcConfig 内注册，MyWebMvcConfig 是我们自定义的关于 WebMvc 的配置类，需要实现 WebMvcConfigurer 接口
+     此接口实现了添加 拦截器、视图、跳转设置、首页设置 等方法，我们在这里可以根据具体需求复写这些方法。

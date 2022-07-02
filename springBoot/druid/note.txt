@@ -1,0 +1,8 @@
+配置druid数据库连接池
+   1.导入依赖 ：druid、mysql-connector-java、spring-boot-starter-jdbc、log4j
+
+   2.编写配置文件
+      2.1 :将Druid连接池注入容器
+      2.2 :配置Druid的servlet
+
+   4.使用

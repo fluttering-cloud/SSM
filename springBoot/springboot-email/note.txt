@@ -1,0 +1,33 @@
+java中实现邮件功能的对象 : JavaMailSenderImpl
+在这个类里有几个比较重要的属性 :
+                 默认协议：DEFAULT_PROTOCOL = "smtp";
+                 服务器端口：host;
+                 用户名
+                 密码/授权码
+                 邮件发送者、邮件接收者
+                 邮件发送方法 : send()
+
+
+   springboot邮件发送任务的实现最终还是由JavaMailSenderImpl来完成的，在springboot内有两个发送邮件的对象，
+分别为: 简单邮件对象（SimpleMailMessage）、复杂邮件对象（MimeMessage）,其中复杂邮件对象可以借助 MimeMessageHelper 类
+实现附件（图片、文档等）的传输。
+   当邮件对象完成对邮件信息的封装后，就可以通过 JavaMailSenderImpl 对象的send（）方法进行传输了
+
+
+
+springboot邮件任务开启步骤:
+   1.导入依赖:spring-boot-starter-mai
+   2.编写配置文件: spring.mail.
+        2.1:host类型
+        2.2:QQ邮箱还需要开启协议:spring.mail.properties.mail.smtp.enable=true
+        2.3:关于邮件任务的配置还有许多，以上两项是基本配置，其它的配置我们可由实际需求选择
+
+   3.编写邮箱服务
+        3.1 获取邮件发送实现类 JavaMailSenderImpl
+        3.2 设置用户名、密码/qq授权码
+        3.3 设置host类型，qq为：smtp.qq.com, 网易为:smtp.qq.com,若不设置，则默认为配置文件内设置的host
+        3.4 获取spring内的 简单/复杂邮件对象
+        3.5 使用邮件对象封装邮件信息
+        3.6 设置发送者、接收者
+        3.7 调用 JavaMailSenderImpl对象的send（）方法发送邮件
+

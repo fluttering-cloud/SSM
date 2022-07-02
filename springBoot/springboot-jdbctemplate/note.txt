@@ -1,0 +1,21 @@
+jdbcTemplate
+
+   背景 ：相信大多数的人都写过原生的jdbc代码，是不是被其复杂的流程折磨的抓耳挠腮呢？
+         在原生的jdbc代码中，我们要手动获取数据库的连接对象，执行任务是要考虑什么
+         时候开启和关闭对象的连接、sql的注入问题、事务的管理问题。想想这些就觉得头大。
+         而springboot内的jdbcTemplate就很好的解决了这个问题，它将复杂的JDBC代码
+         进行了封装，使得使用者不需要在去关心功能对象（如连接对象、预编译对象等）的获取
+         和关闭等操作，使用者只需要编写好sql语句交给其相应的接口实现即可。
+
+   使用步骤：
+      1.导入jdbc的依赖：spring-boot-starter-data-jdbc，数据库的依赖 ：mysql-connector-java
+      2.配置数据库连接池，确保程序与数据库的连接
+      3.创建 jdbcTemplate 对象，编写sql语句，选择相应的接口实现
+
+   使用注意：
+         jdbcTemplate 对数据的增、删、改、查功能是实现主要是使用 query、queryForObject()、update
+      方法完成的，其中 query、queryForObject() 用来实现查询功能。这里有一个需要注意的点，就是使用jdbc
+      查询出的数据是字符串形式的。那么当我们想要查询一个对象时该怎么办呢？springboot提供了一个
+      mapRow(ResultSet resultSet, int i), 映射方法，这个映射方法的映射关系由开发者自定义，在使用查询方法
+      时将这个映射方法作为参数传递，在  query、queryForObject() 方法执行获得ResultSet 后，mapRow会根据映射
+      关系生成相应的对象

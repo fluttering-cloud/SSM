@@ -1,0 +1,86 @@
+jpa:
+   -jpa 是 springboot 关于数据持久化层的一个框架
+   -底层框架 ：hibernate
+   -优点 ：自动化，当编写好实体类，并为实体类之间设置好关系后，在运行时 jpa 可以自动在数据库内根据实体类生成表。
+          同时，可以自动生成 sql 语句。（这些都行hibernate的特性）
+   -缺点 ：不够灵活，sql 的定制化有限
+   **********************************************************************************************
+   -使用 ：
+        1.配置数据源（只要涉及到数据库都需要）
+   **********************************************************************************************
+        2.在配置文件内配置 jpa，配置如下
+            show-sql: true
+            hibernate:
+                  ddl-auto: update
+           2.1 ：jpa常见配置的功能：
+               #数据库方言
+               spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+               #自动更新数据库
+               spring.jpa.hibernate.ddl-auto=update
+               #性能调优
+               #显示sql执行语句
+               spring.jpa.show-sql=true
+               #sql语句格式化输出
+               spring.jpa.properties.hibernate.format_sql=true
+               #显示sql语句中 ？ 的实际值
+               spring.jpa.properties.hibernate.use_sql_comments: true
+               #统计数据
+               spring.jpa.properties.hibernate.generate_statistics=true
+        **********************************************************************************************
+        3.编写实体类，实体类需要用
+           3.1 ：@Entity 用于标注实体类，表示这是一个 jpa 实体类。
+
+           3.2 ：@Id 用在属性上，表示这个属性是主键。
+
+           3.3 ：@GenerateValues 用在主键的属性上，表示自动生成主键。
+
+           3.4 ：@Table(name="数据库内的表名") 此标签用在实体类上，用于绑定实体类与数据库内的表，若数据库内没有此表，则会自动
+                 创建一个以name设置的参数为表名的表。同时在实体类内的数据变化时，数据库内相应的表也会更新。
+
+           3.5 ：@OneToMany / @ManyToOne / @ManyToMany 用在属性上，通常是两两配对使用，用于设置实体类之间的关系。
+             3.5.1 ：通常，一个类可能是另一个类的一个属性，并且这些类之间有可能是 一对一、一对多、多对多 之间的关系中的一种，
+                     此时使用了 @OneToMany / @ManyToOne / @ManyToMany 标注后，表示声明了类之间的关系，jpa 在数据库
+                     内生成表时就会根据这些关系自动生成 外键 等约束关系。
+
+             3.5.2 ：因为 jpa 是自动化的，当我们获取了一个实体类的同时，会根据类之间的关系获取相应实体类的数据。
+
+             3.5.3 ：在 jpa 内，类之间的关系被分为 维护类与被维护类。被维护类的数据受维护类影响。通常在维护类
+                     的 @OneToMany / @ManyToOne / @ManyToMany 内会用 mappedBy = "被维护类的属性名" 来设置维护关系。
+
+             3.5.4 ：cascade = {CascadeType.PERSIST} ：级联，是 @OneToMany / @ManyToOne / @ManyToMany 内的一个参数
+                     cascade 表示使用级联；CascadeType.PERSIST 是级联的一种规则，即维护类内的数据更新了，被维护类内的数据也会被更新。
+                     在级联中还有许多规则，我们可以通过相关的 api 文档 进行学习。
+
+             3.5.5 ： @Temporal : 通常用在实体类的时间类型的属性上，用于封装时间属性的格式，并将其保存到数据库
+                          @Temporal(TemporalType.DATE)——>实体类会封装成日期“yyyy-MM-dd”的 Date类型。
+                          @Temporal(TemporalType.TIME)——>实体类会封装成时间“hh-MM-ss”的 Date类型。
+                          @Temporal(TemporalType.TIMESTAMP)——>实体类会封装成完整的时间“yyyy-MM-dd hh:MM:ss”的 Date类型。
+        **********************************************************************************************
+        4.编写dao层，进行数据的查询
+           4.1 ：在 jpa 内，dao 层的接口都是以 XXXRepository 为命名规范的，意为 XXX类的数据仓库，当然你也可以按照自己的喜好来命名
+           4.2 ：接口必须继承 JpaRepository<实体类，实体类的参数类型> 。
+                 例如我需要一个接口对数据库内的 user表 进行增删改查，而user表 使用了 @Table 与 Java 内的 User 类进行了绑定, User类的
+                 主键属性为Long ，则此接口如下：
+                 public interface UserRepository extends JpaRepository<User,Long>
+           4.3 ：以 2 中的接口为例，写好此接口后，此接口会自动提供给我们一些关于 User 类 的增删改查的一些基本方法，我们只需要拿到这个接口的对象
+                 就可直接使用。
+           4.4 ： 当然，对于复杂的业务要求，接口提供的方法肯定不能满足我们的需求，此时，我们可以自己根据需求来定义一些方法。
+                  4.4.1 ：在 XXXRepository 的接口内定义方法是以 关键字 来定义的，接口里提供了很多关键字，我们只需要通过
+                          组装这些关键字就可以定义自己需要的方法。
+                  4.4.2 ：以 UserRepository 为例，我们想定义一个通过 用户名和密码 来查找用户的方法，那么我们该这么定义
+                              User findUserByUserNameAndPassword(String username,String password)
+                          find 为查找的意思；User是要操作的对象；ByUserNameAndPassword 是操作的条件。
+                          在 Idea 内，当你输入 find后会自动列出这些 字段 让你选择。
+           4.5 ：若接口有实现类，在接口的实现类上添加 @Repository，将其注册到 IOC 中
+
+           4.6 ：@Transactional：这个注解表示开启事务，并且只能用在 public 级别的方法上才能生效，且没有 传播性。
+                 什么是传播性？ 如现在有两个方法 A和B。A没有使用 @Transactional，即没有开启事务，B 使用了。加设
+                 A 方法可以调用 B 方法。此时若有一个需求需要使用 B 方法，若通过 A 方法去调用 B 方法，则这个情况下
+                 事务是没有开启的，若直接调用 B 方法，则事务是开启的。
+           **********************************************************************************************
+               看完了这些笔记，不知道你有没有发现，明明是对数据库进行操作，但是这里面去没有提到该这么些sql、在哪里写SQL。如果你是一个对
+           数据库不了解的人，那么你应该觉得高兴，因为常用的 sql 已经被 jpa 的底层封装起来了，也就是说我们很少需要自己去写 sql 语句了，对于
+           简单的 crud,我们只需要通过 jpa 提供的签名就可以拼接出相应的方法，如 4.4.2 所示。
+                同时，也正是因为 jpa 封装了 sql,导致 jpa 的灵活性、sql的可定制化程度大大降低，这使得在面对复杂的业务需求时，jpa 就显的很
+           笨拙，远远不如 mybatis 灵活，因此 jpa 的流行程度远远不如 mybatis.
+

@@ -1,0 +1,55 @@
+关于shiro
+   1.Apache Shiro 是 Java 的一个安全框架
+   2.shiro 可以帮助我们完成：认证、授权、加密、会话管理、与 Web 集成、缓存等
+
+shiro常见功能介绍
+    Authentication：身份认证 / 登录，验证用户是不是拥有相应的身份
+
+    Authorization：授权，即权限验证，验证某个已认证的用户是否拥有某个权限；
+                   即判断用户是否能做事情，常见的如：验证某个用户是否拥有某个角色。或者细粒度的验证某个用户对某个资源是否具有某个权限；
+
+    Cryptography：加密，保护数据的安全性，如密码加密存储到数据库，而不是明文存储；
+
+    Remember Me：记住我，这个是非常常见的功能，即一次登录后，下次再来的话不用登录了
+
+
+shiro 的几大核心对象介绍
+    Subject：主体，代表了当前 “用户”，这个用户不一定是一个具体的人，与当前应用交互的任何东西都是 Subject，
+             如网络爬虫，机器人等；即一个抽象概念；所有 Subject 都绑定到 SecurityManager，与 Subject
+             的所有交互都会委托给 SecurityManager；可以把 Subject 认为是一个门面；SecurityManager 才是实际的执行者
+
+    SecurityManager：安全管理器；即所有与安全有关的操作都会与 SecurityManager 交互；且它管理着所有 Subject；
+                     可以看出它是 Shiro 的核心，它负责与后边介绍的其他组件进行交互
+
+    Realm：域，Shiro 从 Realm 获取安全数据（如用户、角色、权限），就是说 SecurityManager 要验证用户身份，那么它需要从
+           Realm 获取相应的用户进行比较以确定用户身份是否合法；也需要从 Realm 得到用户相应的角色 / 权限进行验证用户是否能
+           进行操作；可以把 Realm 看成 DataSource，即安全数据源
+
+shiro的使用：
+     1.整合到springboot
+       1.1 导入依赖 shiro-spring
+       1.2 编写配置
+           1.2.1 : 自定义 Realm 类，实现AuthorizingRealm，自定义的Realm类可以完成认证和授权功能
+           1.2.2 : 编写配置类,配置类内需要完成以下三个配置
+                    a.将自定义的Realm注入spring boot
+                    b.获取shiro的安全管理中心（DefaultWebSecurityManager），并且将其与自定义的Realm本地，然后注入springboot
+                    c.获取shiro的 ShiroFilterFactoryBean ，并且将其与安全管理中心绑定，然后注入springboot
+                    d.注意：springboot使用shiro安全框架是通过  ShiroFilterFactoryBean 的，当时ShiroFilterFactoryBean需要安全管理
+                      中心，而安全管理中心则需要自定义的Realm实现安全管理，在自定义的Realm类里，我们实现了安全管理的具体业务，如认证、授权、
+                      加密等等
+
+     2.登入功能的实现：
+        2.1：    登入流程的分析：用户进入网站后在未登入状态下只能访问部分页面，要想访问其它页面的话就需要登入获取相应的权限，
+             而当用户在登入页面输入账号、密码进行登入时，后台服务会生成一个 Subject 对象，同时用户提交的账号和密码会被
+             封装成一个令牌（UsernamePasswordToken）；此时Subject 对象会调用login（）方法进行登入验证，login方法
+             的参数就是生成的令牌。login（）方法会进入SecurityManager绑定发自定义Realm类中调取认证方法，认证方法会根据用
+             户名去数据库查找相应的用户，查看此用户是否是合法用户，若是合法用户就进入主页。
+                 在这里需要说明一下不合法用户的处理。不合法用户有用户名错误和密码错误两种情况。首先是用户名错误，这种情况认证方法
+             会返回null值，此时shiro会报 UnknownAccountException e 错误，表示用户名错误，我们可以根据此错误将页面重新跳转
+             到登入页面并且附上提示信息。而密码的比较是在 SimpleAuthenticationInfo 对象内比较的，这个对象有两个构造方法，分别
+             为 :
+               SimpleAuthenticationInfo(authenticationToken.getPrincipal(),正确的密码,盐加密,"当前Realm的名字/可为空")
+               SimpleAuthenticationInfo(authenticationToken.getPrincipal(),正确的密码,"当前Realm的名字/可为空")。
+             当用户名（即authenticationToken.getPrincipal()）正确时，返回此对象，此时shiro会自动完成密码的比较。若密码错误则会抛出
+             IncorrectCredentialsException e 的异常，此时我们可以根据此异常返回登入页面并附带提示信息。若密码正确则直接进入主页。
+                 以上就是shiro登入认证的大概流程。

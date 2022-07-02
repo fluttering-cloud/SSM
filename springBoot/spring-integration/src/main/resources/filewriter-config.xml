@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xsi:schemaLocation="http://www.springframework.org/schema/integration/file
+        http://www.springframework.org/schema/integration/file/spring-integration.xsd
+        http://www.springframework.org/schema/integration
+		http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 输入通道,网关的相关方法会通过此通道将数据送入集成流 -->
+    <int:channel id="textInChannel" />
+
+    <!-- 输出通道,当数据经过转换器,过滤器等组件后,会被送到输出通道,然后再到出站通道适配器   -->
+    <int:channel id="fileWriterChannel" />
+
+    <!-- 转换器 -->
+    <int:transformer id="upperCase"
+                     input-channel="textInChannel"
+                     output-channel="fileWriterChannel"
+                     expression="payload.toUpperCase()" />
+
+
+    <!-- 出站通道适配器,将数据送到指定的地方供消费者消费 -->
+    <int-file:outbound-channel-adapter id="writer"
+                         channel="fileWriterChannel"
+                         directory="/file"
+                         mode="APPEND"
+                         append-new-line="true" />
+
+
+       <!--
+          注意：
+              1.输入通道和输出通道不是绝对不不变的，要看开发者如何配置
+              2.写好配置文件后，我们要通过 @ImportResource 将其与相关配置绑定
+              3.
+         -->
+
+
+</beans>

@@ -1,0 +1,59 @@
+SpringSecurity
+     1.什么是SpringSecurity:是一种基于 Spring AOP 和 Servlet 过滤器的安全框架。它提供全面的安全性解决方案，
+                           同时在 Web 请求级和方法调用级处理身份确认和授权
+
+     2.SpringSecurity可以干什么:
+        2.1 对访问者进行身份认证
+        2.2 对请求进行权限控制
+        2.3 对用户的重要信息进行加密存储等等
+
+     3.SpringSecurity的使用
+       3.1 :配置 springSecurity
+            3.1.1 : 导入springSecurity的启动器 : spring-boot-starter-security
+            3.1.2 : 编写配置类 : 我们编写的配置类需要继承 WebSecurityConfigurerAdapter 类，
+            在这个类上加@EnableWebSecurity标签，告诉容器开启安全框架；并且根据业务的需求实现 认证方法、授权方法。
+            3.1.3 :
+             认证方法为 configure(AuthenticationManagerBuilder auth)，我们可以认为认证
+                       方法就是一个备案记录，这里记录了那些人有哪些权限。记录的方式有两种。
+                       a.通过本地内存记录 : auth.inMemoryAuthentication(),代码如下
+                         auth.inMemoryAuthentication() //声明是采用本地内存存储对象
+                              .passwordEncoder(new 加密对象) //声明加密方式
+                              //用户1的基本信息
+                              .withUser(Username1).password(new 加密对象().encode(password).roles("role1","role2"...))
+                              .and() //连接方法
+                              //用户1的基本信息
+                              .withUser(Username2).password(new 加密对象().encode(password).roles("role1","role2"...))
+
+                       b.采用数据库存储（数据库为关系型、基于JDBC）
+                         auth.jdbcAuthentication() //声明是采用数据库方式认证
+                             .dataSource(dataSource) //给一个数据库连接池
+                             .usersByUsernameQuery(sql) /*通过用户名在数据库里查找对象,在认证方法内提供了默认的sql给我们，当然我们
+                                                          也可以自定义sql,需要注意的是所有的sql都是以用户名作为唯一从参数的，所以
+                                                          我们在自定义sql最好也遵守这个协议
+                                                          */
+                             //.authoritiesByUsernameQuery(sql);
+
+
+              授权方法为 configure(HttpSecurity http)，在授权方法内，我们可以对前端发起的请求进行权限
+                        限制，访问页面需要相应的权限。在这里有几个重要的方法
+                           authorizeRequests() : 用于获取前端访问的 http 对象
+                           antMatchers("请求（/XXX）") :用于获取 http 对象的请求
+                           hasRole("")/access("hasRole(' ')") : 给请求设置访问权限
+                           permitAll() : 没有访问权限，表示所有人都可以访问
+                           formLogin() : 进行登入操作，登入页面的请求设置为/login，则当用户进行登入时，
+                                         会进入这里进行一系列的安全验证，提示也会调用认证方法对用户的登入
+                                         信息进行认证。
+                           loginPage("/login") :  声明登入的请求，就此函数而言，在controller层会有一个
+                                                  /login的请求，当用户登入时springSecurity会调用此请求
+                                                  然后进入自定义的登入页面
+                           usernameParameter()/passwordParameter() :参数为登入页面用户名/密码输入框的name
+                                                    用于参数映射.
+
+                           logout() : 用于注销登入，使用此功能前端需发送一个 /logout 请求，当执行此功能后，用户的
+                                      session会被清除
+                           logoutSuccessUrl("/XXX") :表示只有在 /XXX 下的 /logout 才会生效
+
+       3.2 : 防止跨站请求伪造，保护用户请求的安全性。这个措施在SpringSecurity内默认是开启的
+             原理 ： 在jsp和thymeleaf的表单内有一个隐藏标签，记录了一个令牌（toke）,当提交
+                    请求时，SpringSecurity会验证这个令牌，若令牌正确则表明此次请求不是别人
+                    恶意伪造的。

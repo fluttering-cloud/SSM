@@ -1,0 +1,13 @@
+1.Springboot 所以的配置类都有一个自动配置类 RedisConfiguration
+
+2.自动配置类都会绑定一个 properties 配置文件 RedisProperties
+
+3.springboot内有大量的模板对象 redisTemplate
+
+4.redis的所以对象都是要序列号
+
+5.由于string类型是redis最常用的类型，所以还有一个stringRedisTemplate
+
+6.redis的几个基本配置
+    spring.redis.host
+    spring.redis.port

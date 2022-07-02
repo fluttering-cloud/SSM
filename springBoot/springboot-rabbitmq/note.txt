@@ -1,0 +1,44 @@
+RabbitMQ
+
+   -什么是 RabbitMQ :
+       一种异步消息传递的解决方案，异步消息解决的问题有 功能解耦、流量削峰、消息通讯
+
+   -AMQP : 异步通信协议，RabbitMQ 是实现此协议的一种方案
+
+   -RabbitMQ 传递过程中涉及的模块 :
+       1.Message: 消息对象，用于封装要传递的数据，这个对象内有一个routing key,用来进行发信的验证，我们可以将其看成一个信件
+       2.发送者 : 发送 Message 的一方
+       3.队列 : 消息在发送到 Exchange 之后，Exchange会按照规则将消息发给相应的队列，我们可以将队列看出一个邮递员
+       4.Exchange : 可以看作是一个发信箱，这个信箱有六种类型，每一种类型都代表则不同的发信方式
+          4.1 Default 类型 : 这个类型的发信箱会告诉所有的邮递员（队列）来它这里取信，至于邮递员能否取到信，
+              ***就要看邮递员（队列）的名字是否与消息的routing key相同***
+          4.2 Direct 类型 : 如果消息的 routing key 和 邮递员（队列）的 Binding key 相同，则邮递员可以取到信件
+          4.3 Topic 类型  : 如果消息的 routing key 和邮递员的 Binding key 相匹配，那么所有匹配的邮递员都可以取到这个消息，可以理解为多份
+              内容相同的信发往多个地方
+          4.4 Fanout 类型 : 不需要 routing key 和 Binding key 之间相互验证，即所有连接到信箱的队列都可以拿到这个消息，类似广播
+          4.5 Header 类型 : 规则与 Topic 相似，只是验证的对象是***消息的头消息和队列的Binding key***
+          4.6 Dead letter 类型 : 捕获所有无法投递消息。（无法投递的消息是指无法匹配已定义的Exchange和队列的Binding Key关系的消息 ）
+       5.接收者 : 即获得并消费信息的对象，接收者会去队列里获取消息
+
+   -使用RabbitMQ
+       1.导入依赖 : spring-boot-starter-amqp
+       2.若是进行分布式开发，还需要在配置文件内配置如下信息
+           2.1 : 代理地址列表
+           2.2 : 代理的主机
+           2.3 : 代理的端口
+           2.4 : 访问者名字（授权访问）
+           2.5 : 访问密码
+       3.使用RabbitTemplate对消息进行发送和接收，RabbitTemplate是 springboot 操作 RabbitMQ的核心类，实现了AmqpTemplate,
+         RabbitTemplate 内的 send、ConvertAndSend 等方法都是 AmqpTemplate 定义的。
+
+       4.配置消息转换器MessageConvert,在RabbitMQ内可以提供 RabbitTemplate 对象获得消息转换器
+
+       5.发送消息
+           5.1 : 发送原始消息 : 使用send 及 send 的重方法，只能发送原始的 Message 对象，所以在发送数据时要用 MessageConvert
+                 将其转换成 Message 对象
+           2.2 : 发送根据对象转换而成的消息 : 使用 convertAndSend 及 convertAndSend 的重载方法，可以直接发送任意对象，发送的对象
+                 传入 convertAndSend 方法内会被自动封装成 Message 对象
+           3.3 : 发送根据对象转换而成的消息并带有后期处理功能 : 使用 convertAndSend 及 convertAndSend 的重载方法，可以传递一个
+                 MessagePostProcessor 对象对传递的消息进行后期处理
+
+

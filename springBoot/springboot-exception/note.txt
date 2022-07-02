@@ -1,0 +1,7 @@
+  异常说在项目中很常见的一种情况，那么出现异常时如何处理呢？
+这里，我们先来认识几个标签
+      1.@ControllerAdvice : 此注解用在类上，表示该类是一个处理异常的类，并且
+         只会处理 @Controller 标记的异常
+
+      2.@ExceptionHandler(Exception/RuntimeException/.../ .class) ： 用在  @ControllerAdvice 标记的类内的方法中，标识
+        这是处理异常的具体方法

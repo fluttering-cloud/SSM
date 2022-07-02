@@ -1,0 +1,6 @@
+email:
+  host:
+  mailbox: INBOX
+  username:
+  password:
+  poll-rate: 3000

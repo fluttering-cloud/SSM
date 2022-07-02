@@ -1,0 +1,7 @@
+  fragment 是 thymeleaf 的一个语法，用于对公共页面的抽取，从而减轻代码量
+
+  fragment 的使用
+     1.建立一个 _fragment（也可以根据自己的习惯命名） 页面
+     2.将公共模块抽取到此页面，并 th:fragment 对此模块命名
+     3.在需要的页面使用 th:replace="文件名（不加 .html后缀） :: 模块名字" 进行替换
+     4.fragment 传递的参数是从替换模块内传递的
